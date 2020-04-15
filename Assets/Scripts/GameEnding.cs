@@ -8,11 +8,14 @@ public class GameEnding : MonoBehaviour
     public float fadeDuration = 1f;
     public GameObject player;
     public CanvasGroup exitBackgroundImageCanvasGroup;
+    public AudioSource exitAudio;
     public CanvasGroup caughtBackgroundImageCanvasGroup;
+    public AudioSource caughtAudio;
     public float displayImageDuration = 1f;
 
     bool m_IsPlayerAtExit;
     bool m_IsPlayerCaught;
+    bool m_HasAudioPlayed;
     float m_Timer;
     
 
@@ -32,16 +35,23 @@ public class GameEnding : MonoBehaviour
     {
         if (m_IsPlayerAtExit)
         {
-            EndLevel(exitBackgroundImageCanvasGroup, false);
+            EndLevel(exitBackgroundImageCanvasGroup, false, exitAudio);
         }
         else if (m_IsPlayerCaught)
         {
-            EndLevel(caughtBackgroundImageCanvasGroup,true);
+            EndLevel(caughtBackgroundImageCanvasGroup,true, caughtAudio);
         }
     }
 
-    void EndLevel(CanvasGroup imageCanvasGroup, bool doRestart)
+    void EndLevel(CanvasGroup imageCanvasGroup, bool doRestart, AudioSource audioSource)
     {
+        //los sonidos solo se toquen una vez
+        if (!m_HasAudioPlayed)
+        {
+            audioSource.Play();
+            m_HasAudioPlayed = true;
+
+        }
         //cronómetro que empieza a contar desde el momento que lo cruza
         m_Timer += Time.deltaTime;
         //Duración del desvanecimiento y asi iremos incrementando el alpga cada vez mas porque llamaremos a esta funcion
